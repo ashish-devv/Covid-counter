@@ -1,4 +1,9 @@
+<?php
+        include("simple_html_dom.php");
+        $html=file_get_html("https://www.mohfw.gov.in/");
+        $html2=file_get_html("https://www.worldometers.info/coronavirus/");
 
+  ?>
 <html lang="en">
   <head>
     <!-- Required meta tags -->
@@ -52,8 +57,10 @@
         Made With ❤ by <span style="color:red;text-decoration: underline;font-size:30px;"><em>Ashish.</em></span></p>
         <center>
         <a class="btn btn-primary btn-lg" href="https://www.who.int/" role="button" >WHO Website.</a>
-          <br>
-          <a class="btn btn-primary btn-lg" href="https://devapp.cf/" role="button" >Visit My Website.</a>
+        <br>
+        <hr>
+    
+          <a class="btn btn-primary btn-lg" href="http://devapp.cf/" role="button" >Visit My Website.</a>
         </center>
       </div>
       <div class="card text-center bg-dark">
@@ -62,11 +69,51 @@
           Live Counter.
           </h4>
         </div>
+
+        <div class="card-body">
+          <h5 class="card-title">WORLD TOTAL COUNT</h5>
+          <p class="card-text">
+            
+            <?php 
+            $worldc=$html2->find('div[class="maincounter-number"]',0);
+            foreach( $worldc->find('span') as $z){
+              echo $z->plaintext;
+            }
+
+             ?>
+          </p>
+          <h5 class="card-title">WORLD TOTAL DEATH</h5>
+          <p class="card-text">
+            
+            <?php 
+            $worldc=$html2->find('div[class="maincounter-number"]',1);
+            foreach( $worldc->find('span') as $z){
+              echo $z->plaintext;
+            }
+
+             ?>
+          </p>
+          <h5 class="card-title">WORLD TOTAL RECOVERED</h5>
+          <p class="card-text">
+            
+            <?php 
+            $worldc=$html2->find('div[class="maincounter-number"]',2);
+            foreach( $worldc->find('span') as $z){
+              echo $z->plaintext;
+            }
+
+             ?>
+          </p>
+        </div>
+
+
+
+
+
+
         <div class="card-body">
           <div class="card-group bg-dark">
         <?php
-        include("simple_html_dom.php");
-        $html=file_get_html("https://www.mohfw.gov.in/");
         $coun=$html->find('div[class="site-stats-count"]',0);
         $cardnames= array("Active Cases","Cured / Discharged","Deaths","Migrated");
         $imagenames = array("https://cdn.pixabay.com/photo/2020/02/12/04/19/coronavirus-4841637_960_720.png","https://png.pngtree.com/png-vector/20190929/ourlarge/pngtree-cure-bottle-icon-vector-png-image_1768104.jpg","https://i.dlpng.com/static/png/1800057--poison-skull-png-512_512_preview.webp","https://i7.pngguru.com/preview/464/992/27/human-migration-travel-visa-immigration-international-migration-refugee-students.jpg");
@@ -100,6 +147,8 @@
           $table=$html->find('table[class="table table-striped"]',0);
           echo $table;
           ?>
+
+          
       </div>
       <h6 class="text-align:center;">
         Website-Counter
@@ -135,7 +184,7 @@
     $(this).prop('Counter',0).animate({
         Counter: $(this).text()
     }, {
-        duration: 3000,
+        duration: 7000,
         easing: 'swing',
         step: function (now) {
             $(this).text(Math.ceil(now));

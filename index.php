@@ -10,6 +10,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
     <!-- Bootstrap CSS -->
@@ -49,6 +51,38 @@
     
   </head>
   <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" href="#">CoronaVirus COVID-19 Counter.</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="#world">World Counter<span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link" href="#state">State Data <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#graph">Graph</a>
+      </li>
+      
+    </ul>
+    <form class="form-inline my-2 my-lg-0">
+      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+    </form>
+  </div>
+</nav>
+
+
+
+
+
+
+
     <div class="container">
       <div class="jumbotron bg-dark">
         <h1 class="display-4" style="text-align: center;">COVID-19 Counter</h1>
@@ -70,7 +104,7 @@
           </h4>
         </div>
 
-        <div class="card-body">
+        <div class="card-body" id="world">
           <h5 class="card-title">WORLD TOTAL COUNT</h5>
           <p class="card-text">
             
@@ -111,7 +145,7 @@
 
 
 
-        <div class="card-body">
+        <div class="card-body" id="state">
           <div class="card-group bg-dark">
         <?php
         $coun=$html->find('div[class="site-stats-count"]',0);
@@ -150,6 +184,148 @@
 
           
       </div>
+
+
+      
+
+
+
+      <div id="graph">
+        <?php
+        $graphdata=$html->find('tbody',0);
+        //echo $graphdata;
+        $stdata=array();
+        foreach ($graphdata->find('td') as $key) {
+          array_push($stdata, $key->plaintext);
+          //echo $key->plaintext;
+        }
+        $len=count($stdata);
+        //echo $len;
+        //print_r($stdata);
+        $safedata=array_slice($stdata,0,155);
+        //print_r($safedata);
+        $lastdata=array_chunk($safedata, 5);
+        //print_r($lastdata);
+        $tot=array();
+        for ($cn=0; $cn < count($lastdata); $cn++) 
+        {
+          //array_push($death, $lastdata[$cn][2]);
+          array_push($tot, array('y' =>$lastdata[$cn][2],"label"=>$lastdata[$cn][1]));
+          
+
+        }
+        //echo "<br>";
+        //print_r($tot);
+
+        $migrated=array();
+        for ($cn=0; $cn < count($lastdata); $cn++) 
+        {
+          //array_push($death, $lastdata[$cn][2]);
+          array_push($migrated, array('y' =>$lastdata[$cn][3],"label"=>$lastdata[$cn][1]));
+          
+
+        }
+        //echo "<br>";
+        //print_r($migrated);
+
+        $death=array();
+        for ($cn=0; $cn < count($lastdata); $cn++) 
+        {
+          //array_push($death, $lastdata[$cn][2]);
+          array_push($death, array('y' =>$lastdata[$cn][4],"label"=>$lastdata[$cn][1]));
+          
+
+        }
+        //echo "<br>";
+        //print_r($death);
+
+          ?>
+
+          <div class="row">
+        <div class="col-sm-6">
+          <div class="card">
+            <div class="card-body">
+              <div id="chartContainer" style="height: 350px; width: 100%;"></div>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="card">
+            <div class="card-body">
+              <div id="chartContainer1" style="height: 350px; width: 100%;"></div>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="card">
+            <div class="card-body">
+              <div id="chartContainer2" style="height: 350px; width: 100%;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+        
+      </div>
+
+
+
+      <script>
+    window.onload = function () {
+ 
+  var chart = new CanvasJS.Chart("chartContainer", {
+    title: {
+      text: "Total Cases "
+    },
+    axisY: {
+      title: "No of deaths."
+    },
+    data: [{
+      type: "line",
+      dataPoints: <?php echo json_encode($tot, JSON_NUMERIC_CHECK); ?>
+    }] 
+
+  });
+  chart.render();
+
+
+
+  var chart1 = new CanvasJS.Chart("chartContainer1", {
+    title: {
+      text: "Migrated"
+    },
+    axisY: {
+      title: "No of migration."
+    },
+    data: [{
+      type: "line",
+      dataPoints: <?php echo json_encode($migrated, JSON_NUMERIC_CHECK); ?>
+    }] 
+  });
+  chart1.render();
+
+
+
+  var chart2 = new CanvasJS.Chart("chartContainer2", {
+    title: {
+      text: "Death Graph"
+    },
+    axisY: {
+      title: "No of deaths."
+    },
+    data: [{
+      type: "line",
+      dataPoints: <?php echo json_encode($death, JSON_NUMERIC_CHECK); ?>
+    }] 
+  });
+  chart2.render();
+   
+  }
+  </script>
+
+
+
+
+
       <h6 class="text-align:center;">
         Website-Counter
         <!-- Start of WebFreeCounter Code -->

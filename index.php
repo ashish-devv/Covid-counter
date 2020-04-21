@@ -202,7 +202,7 @@
         $len=count($stdata);
         //echo $len;
         //print_r($stdata);
-        $safedata=array_slice($stdata,0,155);
+        $safedata=array_slice($stdata,0,165);
         //print_r($safedata);
         $lastdata=array_chunk($safedata, 5);
         //print_r($lastdata);
